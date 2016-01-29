@@ -1,0 +1,24 @@
+{
+  "name": "lunchtray",
+  "version": "0.0.0",
+  "description": "Tray application for makelunch",
+  "main": "index.js",
+  "scripts": {
+    "build": "electron-packager . lunchtray --platform=darwin --arch=x64 --version=0.36.6 --icon=noun_184605.icns",
+    "start": "electron ."
+  },
+  "author": "Alan Shaw",
+  "license": "ISC",
+  "dependencies": {
+    "ddp": "^0.11.0",
+    "handlebars": "^4.0.5",
+    "md5": "^2.0.0",
+    "menubar": "^3.0.0",
+    "moment": "^2.11.1"
+  },
+  "devDependencies": {
+    "electron-packager": "^5.2.1",
+    "electron-prebuilt": "^0.36.6",
+    "standard": "^5.4.1"
+  }
+}
