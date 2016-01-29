@@ -20,5 +20,13 @@
     "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.6",
     "standard": "^5.4.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tableflip/lunchtray.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tableflip/lunchtray/issues"
+  },
+  "homepage": "https://github.com/tableflip/lunchtray#readme"
 }
