@@ -4,7 +4,9 @@
   "description": "Tray application for makelunch",
   "main": "index.js",
   "scripts": {
-    "build": "electron-packager . lunchtray --platform=darwin --arch=x64 --version=0.36.6 --icon=noun_184605.icns",
+    "build": "npm run build:darwin",
+    "build:darwin": "electron-packager . lunchtray --platform=darwin --arch=x64 --version=0.36.6 --icon=noun_184605.icns",
+    "build:linux": "electron-packager . lunchtray --platform=linux --arch=x64 --version=0.36.6 --icon=noun_184605.icns",
     "start": "electron ."
   },
   "author": "Alan Shaw",
