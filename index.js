@@ -8,34 +8,46 @@ var mb = menubar({
   height: 50
 })
 
+var ddpClient
+
 mb.on('ready', () => {
   console.log('Did you dry these in a rain forest?')
 
-  var ddpClient = new DDPClient({url: 'wss://makelunch.meteor.com/websocket', useSockJs: false})
-
-  ddpClient.connect((err, wasReconnect) => {
-    if (err) return console.error('DDP connection error!', err)
-
-    console.log(`DDP ${wasReconnect ? 're' : ''}connected`)
-
-    ddpClient.subscribe('eaters', [], err => {
-      if (err) return console.error('Failed to subscribe to eaters', err)
-    })
-  })
-
   mb.on('after-create-window', () => {
-    mb.window.webContents.on('did-finish-load', () => {
-      var eaters = transform(ddpClient.collections.Eaters)
-      mb.window.webContents.send('render', eaters)
-      // mb.window.webContents.openDevTools()
-    })
+    mb.window.webContents.on('did-finish-load', send)
   })
 
   mb.on('show', () => {
-    var eaters = transform(ddpClient.collections.Eaters)
-    mb.window.webContents.send('render', eaters)
+    if (!ddpClient) {
+      ddpClient = new DDPClient({url: 'wss://makelunch.meteor.com/websocket', useSockJs: false})
+      return ddpClient.connect(onConnect)
+    }
+
+    send()
   })
 })
+
+function onConnect (err, wasReconnect) {
+  if (err) {
+    console.error('DDP connection error!', err)
+    ddpClient.close()
+    ddpClient = null
+    return
+  }
+
+  console.log(`DDP ${wasReconnect ? 're' : ''}connected`)
+
+  ddpClient.subscribe('eaters', [], err => {
+    if (err) return console.error('Failed to subscribe to eaters', err)
+    send()
+  })
+}
+
+function send () {
+  if (!ddpClient || !mb.window) return
+  var eaters = transform(ddpClient.collections.Eaters)
+  mb.window.webContents.send('render', eaters)
+}
 
 function transform (eaters) {
   eaters = Object.keys(eaters || {}).map(id => eaters[id])
