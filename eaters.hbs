@@ -1,9 +1,9 @@
-{{#if eaters}}
+{{#if eaters.length}}
   <ul>{{#each eaters}}<li>
     <a href="http://makelunch.meteor.com/eater/{{_id}}" title="{{name}}">
       <img src="{{avatar this}}"/>
     </a>
   </li>{{/each}}</ul>
 {{else}}
-  <p>No eaters :(</p>
+  <div class="spinner" title="Loading"></div>
 {{/if}}

@@ -44,8 +44,8 @@ function onConnect (err, wasReconnect) {
 }
 
 function send () {
-  if (!ddpClient || !mb.window) return
-  var eaters = transform(ddpClient.collections.Eaters)
+  if (!mb.window) return
+  var eaters = transform(ddpClient ? ddpClient.collections.Eaters : [])
   mb.window.webContents.send('render', eaters)
 }
 
