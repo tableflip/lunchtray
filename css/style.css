@@ -2,6 +2,9 @@ body {
   padding: 0;
   background-color: #212020;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 ul {
   white-space: nowrap;
   margin: 0;
