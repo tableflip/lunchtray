@@ -1,9 +1,9 @@
 body {
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
   padding: 0;
   background-color: #212020;
-}
-::-webkit-scrollbar {
-  display: none;
 }
 ul {
   white-space: nowrap;

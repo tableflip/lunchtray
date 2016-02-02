@@ -1,6 +1,6 @@
 {{#if eaters.length}}
   <ul>{{#each eaters}}<li>
-    <a href="http://makelunch.meteor.com/eater/{{_id}}" title="{{name}}">
+    <a href="http://makelunch.meteor.com/eater/{{_id}}" title="#{{plus1 @index}}: {{name}}">
       <img src="{{avatar this}}"/>
     </a>
   </li>{{/each}}</ul>

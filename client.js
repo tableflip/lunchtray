@@ -11,6 +11,8 @@ Handlebars.registerHelper('avatar', eater => {
   return `http://www.gravatar.com/avatar/${md5(eater.name)}?s=100&d=retro`
 })
 
+Handlebars.registerHelper('plus1', n => n + 1)
+
 electron.ipcRenderer.on('render', (event, eaters) => {
   console.log(`Rendering ${eaters.length} eaters`)
   render(eaters)
