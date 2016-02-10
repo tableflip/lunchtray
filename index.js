@@ -1,6 +1,7 @@
 var path = require('path')
 var menubar = require('menubar')
 var DDPClient = require('ddp')
+var EJSON = require('ddp-ejson')
 var moment = require('moment')
 
 var mb = menubar({
@@ -8,44 +9,78 @@ var mb = menubar({
   height: 50
 })
 
-var ddpClient
-
 mb.on('ready', () => {
   console.log('Did you dry these in a rain forest?')
+
+  mb.tray.setPressedImage(path.join(__dirname, 'noun_184605_pressed.png'))
 
   mb.on('after-create-window', () => {
     mb.window.webContents.on('did-finish-load', send)
   })
 
   mb.on('show', () => {
-    if (!ddpClient) {
-      ddpClient = new DDPClient({url: 'wss://makelunch.meteor.com/websocket', useSockJs: false})
-      return ddpClient.connect(onConnect)
-    }
-
+    getDdpClient()
     send()
   })
 })
 
-function onConnect (err, wasReconnect) {
-  if (err) {
-    console.error('DDP connection error!', err)
-    ddpClient.close()
-    ddpClient = null
-    return
+var getDdpClient = (() => {
+  var ddpClient
+  var heartbeatTimeout
+
+  return () => {
+    if (ddpClient) return ddpClient
+
+    ddpClient = new DDPClient({url: 'wss://makelunch.meteor.com/websocket', useSockJs: false})
+
+    // Close the connection if heartbeat not recieved
+    ddpClient.on('message', data => {
+      data = EJSON.parse(data)
+      if (data.msg !== 'ping') return
+
+      clearTimeout(heartbeatTimeout)
+
+      heartbeatTimeout = setTimeout(() => {
+        if (!ddpClient) return
+        console.log('DDP heatbeat timeout')
+        ddpClient.close()
+        ddpClient = null
+      }, 60000)
+    })
+
+    ddpClient.on('socket-error', err => {
+      console.error('DDP socket error', err)
+      clearTimeout(heartbeatTimeout)
+      ddpClient.close()
+      ddpClient = null
+    })
+
+    ddpClient.connect(onConnect)
+
+    return ddpClient
   }
 
-  console.log(`DDP ${wasReconnect ? 're' : ''}connected`)
+  function onConnect (err, wasReconnect) {
+    if (err) {
+      console.error('DDP connection error', err)
+      clearTimeout(heartbeatTimeout)
+      ddpClient.close()
+      ddpClient = null
+      return
+    }
 
-  ddpClient.subscribe('eaters', [], err => {
-    if (err) return console.error('Failed to subscribe to eaters', err)
-    send()
-  })
-}
+    console.log(`DDP ${wasReconnect ? 're' : ''}connected`)
+
+    ddpClient.subscribe('eaters', [], err => {
+      if (err) return console.error('Failed to subscribe to eaters', err)
+      send()
+    })
+  }
+})()
 
 function send () {
   if (!mb.window) return
-  var eaters = transform(ddpClient ? ddpClient.collections.Eaters : [])
+  var eaters = transform(getDdpClient().collections.Eaters || [])
   mb.window.webContents.send('render', eaters)
 }
 
