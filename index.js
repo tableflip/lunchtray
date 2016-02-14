@@ -22,6 +22,8 @@ mb.on('ready', () => {
     getDdpClient()
     send()
   })
+
+  getDdpClient()
 })
 
 var getDdpClient = (() => {
