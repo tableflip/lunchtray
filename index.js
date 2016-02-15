@@ -43,8 +43,8 @@ var getDdpClient = (() => {
       clearTimeout(heartbeatTimeout)
 
       heartbeatTimeout = setTimeout(() => {
-        if (!ddpClient) return
         console.log('DDP heatbeat timeout')
+        if (!ddpClient) return
         ddpClient.close()
         ddpClient = null
       }, 60000)
@@ -53,6 +53,7 @@ var getDdpClient = (() => {
     ddpClient.on('socket-error', err => {
       console.error('DDP socket error', err)
       clearTimeout(heartbeatTimeout)
+      if (!ddpClient) return
       ddpClient.close()
       ddpClient = null
     })
