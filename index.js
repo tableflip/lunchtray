@@ -33,7 +33,7 @@ var getDdpClient = (() => {
   return () => {
     if (ddpClient) return ddpClient
 
-    ddpClient = new DDPClient({url: 'wss://makelunch.meteor.com/websocket', useSockJs: false})
+    ddpClient = new DDPClient({url: 'wss://lunch.tableflip.io/websocket', useSockJs: false})
 
     // Close the connection if heartbeat not recieved
     ddpClient.on('message', data => {
