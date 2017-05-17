@@ -1,6 +1,6 @@
 {{#if eaters.length}}
   <ul>{{#each eaters}}<li>
-    <a href="https://lunch.tableflip.io/eater/{{_id}}" title="#{{plus1 @index}}: {{name}}">
+    <a href="https://lunch.tableflip.io/eater/{{_id}}" title="{{score this}}: {{name}}">
       <img src="{{avatar this}}"/>
     </a>
   </li>{{/each}}</ul>
